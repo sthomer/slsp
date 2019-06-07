@@ -1,0 +1,40 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Segmentation}
+
+\subsubsection{Difference Function}
+The difference function operates on the stream of symbols entering a given dimension and decides where segments begin and end.  Though there are a variety of ways in which to determine where to cut in this chain of symbols, here we will look at their information-theoretic properties to determine a meaningful cut. Primarily, we will look at the moving entropy of the signal.  If the entropy rises, then a cut should be a made, marking the end of the current segment and the beginning of a new one.
+
+Since entropy represents the amount of uncertainty at what comes next, it makes sense that a jump in entropy would mark the beginning of a new segment.  For instance, at the beginning of a sentence, entropy is high because the listener has little idea what the speaker will say next. As the sentence proceeds, the speaker will be better able to predict what comes next, meaning entropy is decreasing until the end of the sentence.  Once the sentence is finished, the listener again is less sure what will come next, and so entropy rises.  Therefore, at this rise in entropy, a cut is made, resulting in a segment naturally representing the sentence just spoken.
+
+\subsubsection{Problems with Sparsity}
+This segmentation process results in two problems stemming from the two types of sparsity inherent in the segmentation and subsequent abstraction.
+
+\paragraph{Symbol Sparsity}
+The first kind of sparsity arises from the length of the segment produced in the segmentation process.  Since the abstraction of the segment is its spectral transform, and we use the Discrete Fourier Transform to find the representative symbol in the superior abstraction layer, we run into precision problems due to the uncertainty principle of signal sparsity.  When performing a DFT, the signal precision is limited by the number of non-zero coefficients in either the time or frequency domain.  Therefore, if the number of symbols in a given segment is small, its spectral representation will be imprecise.  Therefore, it is necessary to perform interpolation (see section ?) to "fill out" the signal, so that high precision is maintained in the spectral transformation.
+
+\paragraph{Content Sparsity}
+The second kind of sparsity is due to the nature of the symbol contents.  Since in the case of audio perception, the content of a symbol is a high-dimensional tensor of complex coefficients, not only are the possible values of each dimension uncountably infinite, there are a high number of uncountably infinite dimensions for each symbol.  Therefore, it is incredibly unlikely that any two symbols have exactly the same value for every dimension in the conceptual space in which they live.  
+
+This poses a problem for determining the entropy and information content of symbols, which rely on the probability of a symbol appearing in a signal.  In practice, this probability is approximated by the symbols already observed.  Therefore, if every symbol is unique, in the limit, the probability of seeing one in the signal is 0, meaning the entropy and information content each symbol in the signal would be 0 However, the probability of a unique event is meaningless, and therefore, even talking about its entropy is also meaningless.  
+
+Though the space in which the symbols live is so sparse, we would still like to say that if two symbols are close enough together, for all intents and purposes (intensive porpoises), they are the same symbol.  This is accomplished through categorization (see section ?), where a label is attached to each symbol according to its category.  If two symbols have the same label, then they are equal, even though they may have different contents, that is, different values in their representative complex tensors.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\subsubsection{Information Content Reduction Criterion} 
+Since the goal of an IDyOT is to be as information-efficient as possible in its representation of concepts, the primary way to do this is categorize two different symbols together if they lead to an overall reduction in information content of the space.  However, if this reduction by information content measure was the only method used to determine categories, there would be nothing to stop all symbols from being categorized together.  If all the symbols are the same the information content is maximally reduced, but the result is a meaningless stream of monotony.
+
+\subsubsection{Categorical Convexity Criterion}
+To push back against the reduction by information content is the categorical convexity criterion.  In section (?) we saw that categories in conceptual spaces are convex regions of the space, which translates to a hyperellipsoid in the corresponding Hilbert space.  What the convexity criterion guarantees is that for any two symbols in a given category, there is no symbol from a different category between those two symbols.
+
+Though this criterion is simple in formulation, the definition of what "between" actually means can vary greatly depending on the space in question.  Even when the space is unidimensional, the definition of between is somewhat arbitrary.  For instance, take the space that is wrapped aorund a circle.  Any point is between any other two points, depending on which direction around the circle you move.  Things get even less clear when moving into higher dimensions, where oftentimes, only a partial ordering is possible.
+
+Therefore, instead of looking at betweenness at all, we instead incrementally build up categories by way of an inclusion radius around each point.  If another point falls within the inclusion radius, those points are categorized together.  In this way, we can ensure that there is never an interloper in a category, since if it was intruding on the region of the category, it would already be a member.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The framework was implemented primarily with the Python NumPy (cite) library, with a few helpful inclusions form the SciPy (cite) library.  NumPy was chosen primarily for the multi-dimensional array support required to implement the tensors that arise from the abstraction process.  Categorization of a single new instance is inherently a fully parallelizable process, so the distance comparison was spread in parallel for efficiency.
+
+

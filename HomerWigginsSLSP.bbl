@@ -1,0 +1,82 @@
+\begin{thebibliography}{10}
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\urlprefix}{URL }
+\providecommand{\doi}[1]{https://doi.org/#1}
+
+\bibitem{Clark13}
+Clark, A.: Whatever next? predictive brains, situated agents, and the future of
+  cognitive science. Behavioral and Brain Sciences  \textbf{36},  181--204 (6
+  2013). \doi{10.1017/S0140525X12000477},
+  \url{http://journals.cambridge.org/article\_S0140525X12000477}
+
+\bibitem{ForthAgresEtAl16}
+Forth, J., Agres, K., Purver, M., Wiggins, G.A.: Entraining {{IDyOT}}: timing
+  in the information dynamics of thinking. Frontiers in Psychology  \textbf{7},
+  ~1575 (2016). \doi{10.3389/fpsyg.2016.01575},
+  \url{http://journal.frontiersin.org/article/10.3389/fpsyg.2016.01575}
+
+\bibitem{Friston10}
+Friston, K.: The free-energy principle: A unified brain theory? Nature Reviews
+  Neuroscience  \textbf{11}(2),  127--138 (2010). \doi{10.1038/nrn2787}
+
+\bibitem{Gardenfors00}
+G{\"a}rdenfors, P.: Conceptual Spaces: the geometry of thought. MIT Press,
+  Cambridge, MA (2000)
+
+\bibitem{Gardenfors14}
+G{\"a}rdenfors, P.: Geometry of Meaning. MIT Press, Cambridge, MA. (2014)
+
+\bibitem{HansenPearce14}
+Hansen, N.C., Pearce, M.T.: Predictive uncertainty in auditory sequence
+  processing. Frontiers in Psychology  \textbf{5}(1052) (2014).
+  \doi{10.3389/fpsyg.2014.01052}
+
+\bibitem{Huron06}
+Huron, D.: Sweet Anticipation: Music and the Psychology of Expectation.
+  Bradford Books, MIT Press, Cambridge, MA (2006)
+
+\bibitem{PearceWiggins12}
+Pearce, M.T., Wiggins, G.A.: Auditory expectation: The information dynamics of
+  music perception and cognition. Topics in Cognitive Science  \textbf{4}(4),
+  625--652 (2012). \doi{10.1111/j.1756-8765.2012.01214.x}
+
+\bibitem{Shannon48}
+Shannon, C.: A mathematical theory of communication. Bell System Technical
+  Journal  \textbf{27},  379--423, 623--56 (July and October 1948)
+
+\bibitem{SproatShihEtAl94}
+Sproat, R., Shih, C., Gale, W., Chang, N.: A stochastic finite-state
+  word-segmentation algorithm for chinese. In: Proceedings of the 32nd annual
+  meeting of the {A}ssociation for {C}omputational {L}inguistics. pp. 66--73.
+  Plainsboro, NJ (1994)
+
+\bibitem{vanderVeldeForthEtAl17}
+{van der Velde}, F., Forth, J., Nazareth, D.S., Wiggins, G.A.: Linking neural
+  and symbolic representation and processing of conceptual structures.
+  Frontiers in Psychology  \textbf{8}, ~1297 (2017).
+  \doi{10.3389/fpsyg.2017.01297},
+  \url{http://journal.frontiersin.org/article/10.3389/fpsyg.2017.01297}
+
+\bibitem{WigginsForth15}
+Wiggins, G.A., Forth, J.C.: {IDyOT}: A computational theory of creativity as
+  everyday reasoning from learned information. In: Besold, T.R., Schorlemmer,
+  M., Smaill, A. (eds.) Computational Creativity Research: Towards Creative
+  Machines, pp. 127--150. Atlantis Thinking Machines, Atlantis/Springer (2015)
+
+\bibitem{Wiggins12}
+Wiggins, G.A.: The mind's chorus: Creativity before consciousness. Cognitive
+  Computation  \textbf{4}(3),  306--319 (2012). \doi{10.1007/s12559-012-9151-6}
+
+\bibitem{Wiggins18}
+Wiggins, G.A.: Creativity, information, and consciousness: the information
+  dynamics of thinking. Physics of Life Reviews pp.~-- (2018).
+  \doi{10.1016/j.plrev.2018.05.001},
+  \url{https://www.sciencedirect.com/science/article/pii/S1571064518300599}
+
+\bibitem{WigginsSanjekdar19}
+Wiggins, G.A., Sanjekdar, A.: Learning and consolidation as re-representation:
+  Revising the meaning of memory. Frontiers in Psychology  \textbf{10}(802)
+  (2019). \doi{10.3389/fpsyg.2019.00802},
+  \url{https://www.frontiersin.org/article/10.3389/fpsyg.2019.00802}
+
+\end{thebibliography}

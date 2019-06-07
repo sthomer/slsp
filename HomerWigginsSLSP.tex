@@ -7,6 +7,9 @@
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage[boxed,ruled]{algorithm2e}
+\usepackage{todonotes}
+\usepackage{booktabs}
+\usepackage{tabularx}
 % Used for displaying a sample figure. If possible, figure files should
 % be included in EPS format.
 %
@@ -64,9 +67,6 @@ input sequences at a given basic level of representation---here, the vectors of 
 
 The whole process is guided by an information efficiency criterion, expressed domain-independently in terms of a Shannon-type estimate of the average number of bits required to represent each symbol in the learned memory. In what follows, we refer to this quantity as {\it mean information content}; the estimated number of bits to required to represent a signal is called the {\it information content}.
 
-
-
-
 \subsection{Perceptual Segmentation by Boundary Entropy}
 \subsection{Conceptual Spaces}
 \cite{Gardenfors00,Gardenfors14}
@@ -94,7 +94,7 @@ In order to represent the spectral transformations we utilize the mathematical f
 
 What makes Hilbert spaces powerful is the ability to represent a function as a point in the space.  With the aid of the inner product, one can produce an (infinite) orthonormal sequence for the Hilbert space, and by decomposing any function into its Fourier series on that sequence, we can recover a corresponding coefficient for each element of the orthonormal sequence.  By thinking of each of these elements as a dimension, we can arrange those coefficients into a vector, thereby representing the function as a point in the Hilbert space.
 
-Hilbert Space Equations
+\todo{Hilbert Space Equations}
 
 \subsubsection{Fourier Transform Operator}
 In the abstraction process, we would like to produce a spectral representation of a segment.  One way of doing this is by taking the Fourier transform of signal of the segment to take the representation from the time-domain to the frequency-domain.  By taking the Fourier transform of a time-varying signal, we produce the frequency-domain coefficients for each orthogonal frequency.  By taking the Fourier transform of a curve in a Hilbert space, we end up with a frequency-domain representation of that curve.
@@ -103,15 +103,17 @@ The Fourier transform is an integral operator on Hilbert spaces.  Any operator t
 
 The abstraction process will then consist of taking the Fourier transform of a trajectory through a Hilbert space, and then viewing the resulting frequency-domain signal as a point in the superordinate space.
 
+\todo{Fourier Transform Equations}
+
 \subsubsection{Tensor Rank Promotion}
 
 In IDyOY, a segment in the sequential memory corresponds to a trajectory in the semantic memory.  As such, a trajectory is a time-parametric curve through the points representing those elements of the segment.  For example, if each point is represented as a vector, a sequence of those points would be a vector of vectors, i.e. a matrix.  Since the Fourier transform is an operator, it maintains the shape of the trajectory, and since we will view the result of the Fourier transform as a point in the superordinate space, in our example, the point is now represented as a matrix.  Therefore, the result of abstracting a trajectory is a point in the superordinate space with one higher rank.  Hence, each level of abstraction promotes the rank of the tensors by one.  
 
-To clarify the first few stages of this process, we begin at the base abstraction layer, whose space is filled with points representing the frequencies of a signal of a short moment of time.  These points are vectors (tensor rank 1), that, when strung together into a trajectory, form a matrix.  By taking the Fourier transform and viewing the result as a point in the superordinate abstraction layer, that upper layer is now composed of points represented as matrices (tensor rank 2).  Again, we can string this points together as a trajectory, forming a cube, take the Fourier transform, and view it as a point in the superordinate layer.  Now this layer is composed of points represented as cubes (tensor rank 3). Repeating this process, we then get hypercubes of increasing rank.  In this manner, the rank of a representative tensor increases by one for each layer of abstraction.
+To clarify the first few stages of this process, we begin at the base abstraction layer, whose space is filled with points representing the frequencies of a signal of a short moment of time.  These points are vectors (tensor rank 1), that, when strung together into a trajectory, form a matrix.  By taking the Fourier transform and viewing the result as a point in the superordinate abstraction layer, that upper layer is now composed of points represented as matrices (tensor rank 2).  Again, we can string this points together as a trajectory, forming a cube, take the Fourier transform, and view it as a point in the superordinate layer.  Now this layer is composed of points represented as cubes (tensor rank 3). Repeating this process, we then get hypercubes of increasing rank.  In this manner, the rank of a representative tensor increases by one for each layer of abstraction. \todo{TODO: take out this paragraph if a diagram is made}
 
 Unfortunately, this leads to an exponential explosion in the number of elements constituting a point in a given layer.  Formally, the number of elements is $r^\alpha$, where $r$ is the resolution of interpolation (discussed below), and $alpha$ is the level of the abstraction layer.  Though this is not a problem theoretically, it has consequences in terms of implementation.
 
-\textbf{TODO: Diagram of Tensor Promotion}
+\todo{Diagram of Tensor Promotion}
 
 \subsubsection{Component-wise Independence}
 
@@ -119,46 +121,14 @@ When performing the Fourier transform on a tensor of any rank, it should be note
 
 Recursively performing the DFT on tensors with independent components results in higher rank tesnors with independent components.  This component-independence of the tensor means that the DFT should be taken component-wise, since all other cross-component terms would involve orthogonal components.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsection{Segmentation}
-
-\subsubsection{Difference Function}
-The difference function operates on the stream of symbols entering a given dimension and decides where segments begin and end.  Though there are a variety of ways in which to determine where to cut in this chain of symbols, here we will look at their information-theoretic properties to determine a meaningful cut. Primarily, we will look at the moving entropy of the signal.  If the entropy rises, then a cut should be a made, marking the end of the current segment and the beginning of a new one.
-
-Since entropy represents the amount of uncertainty at what comes next, it makes sense that a jump in entropy would mark the beginning of a new segment.  For instance, at the beginning of a sentence, entropy is high because the listener has little idea what the speaker will say next. As the sentence proceeds, the speaker will be better able to predict what comes next, meaning entropy is decreasing until the end of the sentence.  Once the sentence is finished, the listener again is less sure what will come next, and so entropy rises.  Therefore, at this rise in entropy, a cut is made, resulting in a segment naturally representing the sentence just spoken.
-
-\subsubsection{Problems with Sparsity}
-This segmentation process results in two problems stemming from the two types of sparsity inherent in the segmentation and subsequent abstraction.
-
-\paragraph{Symbol Sparsity}
-The first kind of sparsity arises from the length of the segment produced in the segmentation process.  Since the abstraction of the segment is its spectral transform, and we use the Discrete Fourier Transform to find the representative symbol in the superior abstraction layer, we run into precision problems due to the uncertainty principle of signal sparsity.  When performing a DFT, the signal precision is limited by the number of non-zero coefficients in either the time or frequency domain.  Therefore, if the number of symbols in a given segment is small, its spectral representation will be imprecise.  Therefore, it is necessary to perform interpolation (see section ?) to "fill out" the signal, so that high precision is maintained in the spectral transformation.
-
-\paragraph{Content Sparsity}
-The second kind of sparsity is due to the nature of the symbol contents.  Since in the case of audio perception, the content of a symbol is a high-dimensional tensor of complex coefficients, not only are the possible values of each dimension uncountably infinite, there are a high number of uncountably infinite dimensions for each symbol.  Therefore, it is incredibly unlikely that any two symbols have exactly the same value for every dimension in the conceptual space in which they live.  
-
-This poses a problem for determining the entropy and information content of symbols, which rely on the probability of a symbol appearing in a signal.  In practice, this probability is approximated by the symbols already observed.  Therefore, if every symbol is unique, in the limit, the probability of seeing one in the signal is 0, meaning the entropy and information content each symbol in the signal would be 0 However, the probability of a unique event is meaningless, and therefore, even talking about its entropy is also meaningless.  
-
-Though the space in which the symbols live is so sparse, we would still like to say that if two symbols are close enough together, for all intents and purposes (intensive porpoises), they are the same symbol.  This is accomplished through categorization (see section ?), where a label is attached to each symbol according to its category.  If two symbols have the same label, then they are equal, even though they may have different contents, that is, different values in their representative complex tensors.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\todo{Cite thesis for proof of independence. Will I have this?}
 
 \subsection{Categorization}
 
 \subsubsection{Inner Product}
-Inner product determines the geometry of the space and induces a norm.
+The inner product used here corresponds with the Euclidian norm, but since we are operating more generally on tensors, and not just vectors, the Frobenius norm was used instead.  This norm corresponds to a flat space where each dimension behaves linearly and equally in relation to the other dimensions.  The Frobenious norm is intuitive for visualizing the space, and so serves as a good norm to begin exploration.  Future research will investigate different inner products and their induced norms to see how they affect categorization.
 
-Euclidian norm corresponds to "flat" space.  Here, we use the Frobenius norm as an analog to the Euclidian norm for tensors.
-
-\subsubsection{Information Content Reduction Criterion} 
-Since the goal of an IDyOT is to be as information-efficient as possible in its representation of concepts, the primary way to do this is categorize two different symbols together if they lead to an overall reduction in information content of the space.  However, if this reduction by information content measure was the only method used to determine categories, there would be nothing to stop all symbols from being categorized together.  If all the symbols are the same the information content is maximally reduced, but the result is a meaningless stream of monotony.
-
-\subsubsection{Categorical Convexity Criterion}
-To push back against the reduction by information content is the categorical convexity criterion.  In section (?) we saw that categories in conceptual spaces are convex regions of the space, which translates to a hyperellipsoid in the corresponding Hilbert space.  What the convexity criterion guarantees is that for any two symbols in a given category, there is no symbol from a different category between those two symbols.
-
-Though this criterion is simple in formulation, the definition of what "between" actually means can vary greatly depending on the space in question.  Even when the space is unidimensional, the definition of between is somewhat arbitrary.  For instance, take the space that is wrapped aorund a circle.  Any point is between any other two points, depending on which direction around the circle you move.  Things get even less clear when moving into higher dimensions, where oftentimes, only a partial ordering is possible.
-
-Therefore, instead of looking at betweenness at all, we instead incrementally build up categories by way of an inclusion radius around each point.  If another point falls within the inclusion radius, those points are categorized together.  In this way, we can ensure that there is never an interloper in a category, since if it was intruding on the region of the category, it would already be a member.
+\todo{Frobenius Inner Product Equation}
 
 \subsubsection{Adaptive Categories}
 
@@ -182,6 +152,8 @@ Posterior Update Equations (cite)
       \tag*{(Posterior Variance)}
   \end{align}
 
+\todo{Talk about tradeoff between Max IC criterion and Convexity criterion?}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Interpolation}
@@ -190,19 +162,20 @@ One useful aspect of Hilbert spaces is that all infinite-dimensional Hilbert spa
 
 Here, the problem arises during segmentation.  Since each segment in a given abstraction layer can be of arbitrary length, but we want the spectral transformations of all segments of a single space to land in a single, different space, the transformation of the each segment must be taken over the same number of points.  Interpolation allows us to infer a curve through the points of a segment and place the required number of virtual points on that curve such that all segments have the same number of virtual points.
 
+\todo{Cite thesis for sparsity concerns for motivating interpolation}
+
 \subsubsection{Regression Sampling}
 
 In order to realize this process, we first regress through the available points of a segment.  In order to regress through the points, each point is assigned to an index that represents its relative place in the trajectory, and regression is performed through that series.  It is important to maintain the relative "lengths" of each point in this trajectory, where the length corresponds to the length of the segment of which this point is a spectral transformation of the cwsubordinate layer.  Since segments are likely to be of different lengths, in this way, points at higher abstraction layers still maintain a sense of their connection to the base layer's time domain, while still being time-invariant.  By spreading the index of a giving point according to its length for regression, the sense of relative length is maintained.
 
 With the points now arranged according to their relative lengths, regression can be performed. Though the proper regression technique is still open to future research, in this implementation, Gaussian Process regression (cite) is employed because (reasons).  Once the regression curve is found, the number of points according to the resolution is taken at equal intervals from the curve.  These virtual points will then be used in the spectral transformation of the abstraction process.
 
-\textbf{TODO: Interpolation Equations}
+\todo{Interpolation Equations}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Algorithm}
 
-\textbf{Pseudocode}
 
 \begin{algorithm}[H]
   \KwData{A clip of human speech}
@@ -210,49 +183,78 @@ With the points now arranged according to their relative lengths, regression can
   \caption{IDyOT Perception}
 \end{algorithm}
 
+\todo{Pseudocode}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Experiments}
 
-The framework was implemented primarily with the Python NumPy (cite) library, with a few helpful inclusions form the SciPy (cite) library.  NumPy was chosen primarily for the multi-dimensional array support required to implement the tensors that arise from the abstraction process.  Categorization of a single new instance is inherently a fully parallelizable process, so the distance comparison was spread in parallel for efficiency.
-
 \subsection{Parameterization}
 
-The parameterization of the implementation comes from just two parameters: the resolution of interpolation, and the initial radii of a new category.  The resolution of interpolation is set to equal the sample window size used to slice the waveform for consistency.  Though we expect that a larger resolution will result in richer categories in the higher levels, the exponential explosion in the size of the tensor representing a category, due to tensor rank promotion (see section ?), limits our resolution of our implementation to 16 samples.  However, it was found that below a certain resolution, the results are somewhat similar.  For instance, a 32 sample resolution behaves similarly to the 16 sample, while having significantly higher processing and memory requirements.
+The parameterization of the implementation comes from just two parameters: the resolution of interpolation, and the initial radii of a new category.  The resolution of interpolation is set to equal the sample window size used to slice the waveform for consistency.  Though we expect that a larger resolution will result in richer categories in the higher levels, the exponential explosion in the size of the tensor representing a category, due to tensor rank promotion (see section ?), limits our resolution of our implementation to $r=16$ samples.  However, it was found that below a certain resolution, the results are somewhat similar.  For instance, a 32 sample resolution behaves similarly to the 16 sample, while having significantly higher processing and memory requirements.
 
-The initial radius for a new category for a given dimension is the other parameter that required fine-tuning.  These radii have the largest effect on categorization within a dimension, and therefore also affects the segmentation in that dimension.  Though the adaptive categorization method will alter the category volume according to its members, the initial radius will determine how willing a dimension as a whole is to categorize new instances.  If this initial radius is too small, then nothing will be categorized, and therefore nothing can be segmented.  If it is too large, then instances that should not be categorized together will be.  Significant fine-tuning was done find the proper initial radii for each dimension to hit the sweet spot between these two extremes.
+The initial radius for a new category for a given dimension is the other parameter that required fine-tuning.  These radii have the largest effect on categorization within a dimension, and therefore also affects the segmentation in that dimension.  Though the adaptive categorization method will alter the category volume according to its members, the initial radius will determine how willing a dimension as a whole is to categorize new instances.  If this initial radius is too small, then nothing will be categorized, and therefore nothing can be segmented.  If it is too large, then instances that should not be categorized together will be.  Due to the exponential growth in the number of elements in a tensor at each level, the initial radius parameters chosen also grow exponentially.  Specifically, at zero-indexed abstraction level $\alpha$, the initial radius $\rho_0 = 10^{\alpha}$.
 
 \subsection{Data}
 
 The TIMIT dataset (cite) was used for testing the implementation.  Besides having a large variety of speakers on which to train in order to diversify the categories of each space, each speech clip in the dataset is accompanied by annotations connecting words and syllables to a specific sample in the clip.  This allows us to compare the annotations, spectrogram, and categories of each dimension in one unified visualization in order to examine if, for instance, categories at higher levels are associated with certain words or syllables.
 
+\subsection{Methodology}
+
+The IDyOT was trained on a 10 clip set from a single speaker, ranging from 1.5 seconds to 4 seconds, with most clips being around 3 seconds.  With a resolution of $r=16$ samples, this test set results in over 26000 distinct slices of speech to be analyzed.  Though, theoretically the maximum abstraction layer is unknown, but large, here, it was capped at the fourth level due to processing and memory limitations.  The resulting semantic memory was then used as a seed to create a sequential memory from a single clip of the same speaker.  This sequential memory is visualized in the category flow (figure ?) and the semantic memory in the spatial plot (figure ?).
+
 \subsection{Results}
+
+\todo{Table: instances per dimension, categories per dimension, percentage reduction}
+instances = [2841, 1738, 824, 356]
+categories = [605, 601, 438, 319]
+\% reduction = [0.787, 0.654, 0.468, 0.103]
 
 \subsubsection{Sequential Memory Category Flow}
 
-The Sequential Memory Category Flow diagram (figure ?) illustrates the hierarchical categorization process. At each level, the word and syllable annotations are overlaid the categories to easily discern where a certain sound should begin and end.  The spectrogram is also displayed for visual comparison of the annotations and the actual signal.  In the category flow, each category is represented for its duration in the clip for each abstraction level, where each category has a spot on the y-axis.  In order to highlight how transitions in a subordinate layer are abstracted into categories in the superordinate layer, the categories are ordered vertically according to their maximum pair frequency such that categories that often appear in sequence are near eachother vertically.  This ordering is what gives the categories their distinctive "flow".
+The Sequential Memory Category Flow diagram (figure ?) illustrates the hierarchical categorization process. At each level, the word and syllable annotations are overlaid the categories to easily discern where a certain sound should begin and end.  The spectrogram is also displayed for visual comparison of the annotations and the actual signal.  In the category flow, each category is represented for its duration in the clip for each abstraction level, where each category has a spot on the y-axis.  That is, a category corresponds to a horizontal line on the plot.  In order to highlight how transitions in a subordinate layer are abstracted into categories in the superordinate layer, the categories are ordered according to their maximum pair frequency such that categories that often appear in sequence are near eachother vertically.
+
+\todo{How to fit massive plot on here?}
+
+In the category flow, we see that lower levels are quite noisy, with nearly all categories persisting for a single moment.  As we move up in abstraction, the flow flattens out and solidifies, meaning that different trajectories from the subordinate layers are being categorized together in the superordinate layer.  As the abstraction level increases, we see a tendency for transitions between categories to flatten out into a smaller number of categories, where at the higher levels, these transitions flatten out completely into just one category.  By solidifying, we mean that the noisy transitions found in the lower layers are categorized together in the upper layers, resulting in a densor category flow.
+
+This process begins a bit in layer 2, but occurs much more frequently in layer 3.  This is most easily seen in the silent portion, marked \textit{h\#}, at the beginning of the clip.  This "syllable" is not actually silent because it contains faint white noise.  The lower layers categorize these different moments of white noise separately, resulting in the ramp in categories at level 0, but moving up the abstraction layers, their trajectories are categorized together into just a handful of categories at level 3.  This is evidence that similar speech moments are categorized together, yielding meaningful categories at higher layers.
+
+Since we see that the white noise of the silence portion of the clip is categorized together, we can also see a few sections at level 3 where the categories or trajectories nearly line up with the syllable annotation boundaries.  For instance, the 's' syllable in the word 'suit' has been categorized into one category at this level, and the trajectory for the 'ao' syllable in the word 'wash' is clearly demarcated at the boundaries.  One would expect that at the next level of abstraction, these clear trajectories would then become categories.
 
 \subsubsection{Semantic Memory Spatial Plot}
 
-The Semantic Memory Spatial Plot (figure ?) attempts to show the distribution of categories in a given dimension.  Since, especially at the higher levels, visualizing these high-dimensional categories is nigh impossible, this plot only shows how far away a given category is from the origin (i.e. the norm of the prior mean of the category) on the x-axis, and the radius of the category on the y-axis.
+The Semantic Memory Spatial Plot (figure ?) shows the distribution of categories in a given dimension.  Since, especially at the higher levels, visualizing these high-dimensional categories is nigh impossible, this plot only shows how far away a given category is from the origin (i.e. the norm of the centroid of a category) on the x-axis, and the radius of the category on the y-axis.
+
+\todo{How to fit plots on here?}
+
+Looking at all of the spatial plots, one can immediately see a positive correlation between theremoteness (i.e. distance from the origin) of a category and its volume.  At each abstraction level, we see most categories are close together with a small volume, and as the categories move away from the origin, there volume also increases.  This is to be expected; since the adaptive categorization tends to reduce the volume of categories with many members, and there are more instances near the origin than away from it.  Therefore, looking at the space as a whole, we see that the category density is high near the origin, and more sparse as one moves out.
+
+It is also important to note that the adaptive categorization method employed here is not overly constraining the radii of each dimension.  If it were, instead of the linear trend we see here, the trend would shoot up to initial radius of the dimension and flatten out.  This top-flattening would result in a larger amount of non-categorizable regions in the space, meaning that this adaptive categorization fills the space quite well, though this is difficult to verify.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Discussion}
 
+When examining the category flow as a whole, one can see a noisy category signal at the bottom layers becomes more consistent at the upper layers.  Even more, we can see that similar trajectories in lower layers are categorized together in upper layers.  This is evident in the 'striping' seen in lower layers, which is perhaps a frequency beating artifact of the recording and sample rate, becoming a single category in upper layers.  This is seen most readily in the 's' syllable of the word 'suit', which exhibits striping at the lower levels.  Since these transitions are very similar, their trajectories and therefore abstraction should be similar, and we see that at the upper levels these similar transitions are all categorized together.
+
+In this way, we can see that even at abstraction level 3, the hierarchical spectral representations of the speech signal are coalescing into categories that could be said to represent human speech sounds.  One could imagine, given a few more levels of abstraction and more training, that the high level abstraction categories would become consistent, meaningful representations of the human speech signals they are learned from.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Conclusion and Future Work}
 
+\todo{Wrap it up, son.}
+
 \subsection{Future Work}
 
-Category Pruning and Consolidation
+\todo{Other future work, if room, so probably not}
 
 One of the main problems of this formalism comes from the use of the Fourier transform operator as the method of producing a spectral respresentation for abstraction.  Since tensor rank promotion results in exponentially larger representations of a category, the processing and memory requirements for a given category become huge after only a few levels of abstraction.  If instead a different formalism is used for a spectral representation instead of the Fourier transform that can avoid tensor rank promotion, then we retain the time-invariance necessary for abstraction, without the computational overhead. Specifically, if instead of using a spectral operator like the Fourier Transform, a spectral projector could be used to stay in the same rank Hilbert space at each level of abstraction.
 
-An interesting corollary of using a projector instead of operator is that since the abstraction of a trajectory would land in the same Hilbert space, being the same rank and dimensionality, even though the abstraction lives in a separate conceptual space, if one maps that abstraction back onto its subordinate layer, one could examine an abstraction of a trajectory in the same space as that trajectory!  By imperfect analogy, this would be akin to finding that the spectral representation of a full sentence is equivalent to a single word, probably not in that sentence.
+An interesting corollary of using a projector instead of operator is that since the abstraction of a trajectory would land in the same Hilbert space, being the same rank and dimensionality, even though the abstraction lives in a separate conceptual space, if one maps that abstraction back onto its subordinate layer, one could examine an abstraction of a trajectory in its same space!  By imperfect analogy, this would be akin to finding that the spectral representation of a full sentence is equivalent to a single word, probably not in that sentence.
+
 
 % ---- Bibliography ----
 %
